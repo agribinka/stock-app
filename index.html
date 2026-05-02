@@ -49,7 +49,7 @@
     <!-- Dynamically rendered by app.js -->
   </div>
 
-  <!-- Form Tambah Barang (dengan Harga) -->
+  <!-- Form Tambah Barang (dengan Harga & Satuan Dropdown) -->
   <div class="card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center">
       <span>➕ Tambah Barang</span>
@@ -57,48 +57,64 @@
     </div>
     <div class="card-body">
       <form id="formBarang" class="row g-2">
+        <!-- KODE -->
         <div class="col-4 col-md-2">
-  <select id="satuan" class="form-select form-select-sm" required>
-    <option value="pcs">pcs</option>
-    <option value="kg">kg</option>
-    <option value="gram">gram</option>
-    <option value="liter">liter</option>
-    <option value="ml">ml</option>
-    <option value="pack">pack</option>
-    <option value="box">box</option>
-    <option value="karung">karung</option>
-    <option value="ikat">ikat</option>
-    <option value="tandan">tandan</option>
-    <option value="butir">butir</option>
-    <option value="lusin">lusin</option>
-    <option value="meter">meter</option>
-    <option value="other">✨ Lainnya...</option>
-  </select>
-</div>
-        <!-- Custom satuan input (hidden by default) -->
-<div class="col-4 col-md-2 d-none" id="customSatuanWrap">
-  <input type="text" id="customSatuan" class="form-control form-control-sm" placeholder="Ketik satuan..." maxlength="15">
-</div>
+          <input type="text" id="kode" class="form-control form-control-sm" placeholder="Kode*" required maxlength="20">
+        </div>
+        
+        <!-- NAMA -->
         <div class="col-8 col-md-3">
           <input type="text" id="nama" class="form-control form-control-sm" placeholder="Nama Barang*" required>
         </div>
+        
+        <!-- SATUAN (Dropdown) -->
         <div class="col-4 col-md-2">
-          <input type="text" id="satuan" class="form-control form-control-sm" placeholder="Satuan" value="pcs">
+          <select id="satuan" class="form-select form-select-sm" required>
+            <option value="pcs">pcs</option>
+            <option value="kg">kg</option>
+            <option value="gram">gram</option>
+            <option value="liter">liter</option>
+            <option value="ml">ml</option>
+            <option value="pack">pack</option>
+            <option value="box">box</option>
+            <option value="karung">karung</option>
+            <option value="ikat">ikat</option>
+            <option value="tandan">tandan</option>
+            <option value="butir">butir</option>
+            <option value="lusin">lusin</option>
+            <option value="meter">meter</option>
+            <option value="ekor">ekor</option>
+            <option value="pohon">pohon</option>
+            <option value="other">✨ Lainnya...</option>
+          </select>
         </div>
+        
+        <!-- CUSTOM SATUAN (Hidden by default) -->
+        <div class="col-4 col-md-2 d-none" id="customSatuanWrap">
+          <input type="text" id="customSatuan" class="form-control form-control-sm" placeholder="Ketik satuan..." maxlength="15">
+        </div>
+        
+        <!-- STOK AWAL -->
         <div class="col-4 col-md-2">
           <input type="number" id="stok" class="form-control form-control-sm" placeholder="Stok Awal" value="0" min="0">
         </div>
+        
+        <!-- HARGA BELI -->
         <div class="col-6 col-md-2">
           <input type="number" id="hargaBeli" class="form-control form-control-sm" placeholder="Harga Beli*" min="0" required>
         </div>
+        
+        <!-- HARGA JUAL -->
         <div class="col-6 col-md-1">
           <input type="number" id="hargaJual" class="form-control form-control-sm" placeholder="Jual" min="0">
         </div>
+        
+        <!-- TOMBOL SUBMIT -->
         <div class="col-12 col-md-1">
           <button type="submit" class="btn btn-primary btn-sm w-100">+</button>
         </div>
       </form>
-      <small class="text-muted">💡 Harga dalam Rupiah (contoh: 15000)</small>
+      <small class="text-muted">💡 Harga dalam Rupiah (contoh: 15000) • Satuan bisa custom</small>
     </div>
   </div>
 
@@ -216,7 +232,7 @@
     <p class="mb-1">💾 Data tersimpan di browser • <strong>Backup rutin!</strong></p>
     <p class="mb-0">
       <a href="https://github.com" target="_blank" class="text-decoration-none">GitHub</a> 
-      • v2.0 Pro • Made with ❤️
+      • v2.1 Pro • Made with ❤️
     </p>
   </div>
 </footer>
@@ -246,24 +262,32 @@ if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed:', err));
 }
 </script>
+
+<!-- Script: Toggle Custom Satuan + Helper -->
 <script>
-// Toggle input custom satuan
-document.getElementById('satuan')?.addEventListener('change', function() {
+document.addEventListener('DOMContentLoaded', function() {
+  // Toggle input custom satuan
+  const selectSatuan = document.getElementById('satuan');
   const customWrap = document.getElementById('customSatuanWrap');
   const customInput = document.getElementById('customSatuan');
-  if (this.value === 'other') {
-    customWrap.classList.remove('d-none');
-    customInput?.focus();
-    customInput?.setAttribute('required', 'required');
-  } else {
-    customWrap.classList.add('d-none');
-    customInput?.removeAttribute('required');
-    customInput.value = '';
+  
+  if (selectSatuan) {
+    selectSatuan.addEventListener('change', function() {
+      if (this.value === 'other') {
+        customWrap?.classList.remove('d-none');
+        customInput?.focus();
+        customInput?.setAttribute('required', 'required');
+      } else {
+        customWrap?.classList.add('d-none');
+        customInput?.removeAttribute('required');
+        if (customInput) customInput.value = '';
+      }
+    });
   }
 });
 
-// Helper: ambil nilai satuan (dengan custom support)
-function getSatuanValue() {
+// Helper: ambil nilai satuan (dengan custom support) - bisa dipanggil dari app.js
+window.getSatuanValue = function() {
   const select = document.getElementById('satuan');
   const custom = document.getElementById('customSatuan');
   if (!select) return 'pcs';
@@ -271,7 +295,8 @@ function getSatuanValue() {
     return custom.value.trim().toLowerCase();
   }
   return select.value;
-}
+};
 </script>
+
 </body>
 </html>
