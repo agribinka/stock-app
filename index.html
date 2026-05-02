@@ -58,8 +58,23 @@
     <div class="card-body">
       <form id="formBarang" class="row g-2">
         <div class="col-4 col-md-2">
-          <input type="text" id="kode" class="form-control form-control-sm" placeholder="Kode*" required maxlength="20">
-        </div>
+  <select id="satuan" class="form-select form-select-sm" required>
+    <option value="pcs">pcs</option>
+    <option value="kg">kg</option>
+    <option value="gram">gram</option>
+    <option value="liter">liter</option>
+    <option value="ml">ml</option>
+    <option value="pack">pack</option>
+    <option value="box">box</option>
+    <option value="karung">karung</option>
+    <option value="ikat">ikat</option>
+    <option value="tandan">tandan</option>
+    <option value="butir">butir</option>
+    <option value="lusin">lusin</option>
+    <option value="meter">meter</option>
+    <option value="other">✨ Lainnya...</option>
+  </select>
+</div>
         <div class="col-8 col-md-3">
           <input type="text" id="nama" class="form-control form-control-sm" placeholder="Nama Barang*" required>
         </div>
