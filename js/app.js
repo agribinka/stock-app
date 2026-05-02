@@ -445,15 +445,26 @@ function setupEventListeners() {
     formBarang.addEventListener('submit', (e) => {
       e.preventDefault();
       
-      const barang = {
-        kode: document.getElementById('kode').value.toUpperCase().trim(),
-        nama: document.getElementById('nama').value.trim(),
-        satuan: document.getElementById('satuan').value.trim() || 'pcs',
-        stok_awal: parseInt(document.getElementById('stok').value) || 0,
-        harga_beli: parseInt(document.getElementById('hargaBeli').value) || 0,
-        harga_jual: parseInt(document.getElementById('hargaJual').value) || 0,
-        created: new Date().toISOString()
-      };
+// === AMBIL NILAI SATUAN (dengan support custom input) ===
+const selectSatuan = document.getElementById('satuan');
+const customSatuanInput = document.getElementById('customSatuan');
+let satuanValue = selectSatuan?.value || 'pcs';
+
+// Jika pilih "other" dan ada input custom, pakai nilai custom
+if (satuanValue === 'other' && customSatuanInput?.value.trim()) {
+  satuanValue = customSatuanInput.value.trim().toLowerCase();
+}
+
+// === BUAT OBJECT BARANG ===
+const barang = {
+  kode: document.getElementById('kode').value.toUpperCase().trim(),
+  nama: document.getElementById('nama').value.trim(),
+  satuan: satuanValue,  // ← pakai variabel satuanValue
+  stok_awal: parseInt(document.getElementById('stok').value) || 0,
+  harga_beli: parseInt(document.getElementById('hargaBeli').value) || 0,
+  harga_jual: parseInt(document.getElementById('hargaJual').value) || 0,
+  created: new Date().toISOString()
+};
       
       if (!barang.kode || !barang.nama || !barang.harga_beli) {
         showToast('Kode, Nama, dan Harga Beli wajib diisi!', 'error');
