@@ -246,6 +246,32 @@ if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed:', err));
 }
 </script>
+<script>
+// Toggle input custom satuan
+document.getElementById('satuan')?.addEventListener('change', function() {
+  const customWrap = document.getElementById('customSatuanWrap');
+  const customInput = document.getElementById('customSatuan');
+  if (this.value === 'other') {
+    customWrap.classList.remove('d-none');
+    customInput?.focus();
+    customInput?.setAttribute('required', 'required');
+  } else {
+    customWrap.classList.add('d-none');
+    customInput?.removeAttribute('required');
+    customInput.value = '';
+  }
+});
 
+// Helper: ambil nilai satuan (dengan custom support)
+function getSatuanValue() {
+  const select = document.getElementById('satuan');
+  const custom = document.getElementById('customSatuan');
+  if (!select) return 'pcs';
+  if (select.value === 'other' && custom?.value.trim()) {
+    return custom.value.trim().toLowerCase();
+  }
+  return select.value;
+}
+</script>
 </body>
 </html>
